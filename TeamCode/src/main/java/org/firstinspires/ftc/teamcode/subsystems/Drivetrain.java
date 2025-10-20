@@ -22,7 +22,7 @@ public class Drivetrain implements Component {
     private final MotorEx backRightMotor = new MotorEx(DriveConstants.BRMotorID);
 
 
-    //end hardware declaration
+    //end hardware declaration - hello :)
 
     //start command declaration
     public Command drive(Gamepad gamepad1, boolean isFieldCentric) {
