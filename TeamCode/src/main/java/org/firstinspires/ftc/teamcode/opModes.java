@@ -16,8 +16,9 @@ public class opModes extends NextFTCOpMode {
     @Override public void onInit() { }
     @Override public void onWaitForStart() { }
     @Override public void onStartButtonPressed() {Drivetrain.INSTANCE.drive(gamepad1, true).schedule();}
-    @Override public void onUpdate() {telemetry.addData("Caption 1", gamepad1.left_stick_y);
-    telemetry.update();
+    @Override public void onUpdate() {
+        telemetry.addData("Caption 1", gamepad1.left_stick_y);
+        telemetry.update();
     }
     @Override public void onStop() { }
 }
