@@ -16,10 +16,10 @@ public class Drivetrain implements Component {
     public static final Drivetrain INSTANCE = new Drivetrain();
     //start hardware declaration
     private final GoBildaPinpointDriver imu = ActiveOpMode.hardwareMap().get(GoBildaPinpointDriver.class, "odo"); // create IMU instance
-    private final MotorEx frontLeftMotor = new MotorEx(DriveConstants.FLMotorID);
-    private final MotorEx frontRightMotor = new MotorEx(DriveConstants.FRMotorID);
-    private final MotorEx backLeftMotor = new MotorEx(DriveConstants.BLMotorID);
-    private final MotorEx backRightMotor = new MotorEx(DriveConstants.BRMotorID);
+    private final MotorEx frontLeftMotor = ActiveOpMode.hardwareMap().get(MotorEx.class, DriveConstants.FLMotorID);
+    private final MotorEx frontRightMotor = ActiveOpMode.hardwareMap().get(MotorEx.class, DriveConstants.FRMotorID);
+    private final MotorEx backLeftMotor = ActiveOpMode.hardwareMap().get(MotorEx.class, DriveConstants.BLMotorID);
+    private final MotorEx backRightMotor = ActiveOpMode.hardwareMap().get(MotorEx.class, DriveConstants.BRMotorID);
 
 
     //end hardware declaration - hello :)
