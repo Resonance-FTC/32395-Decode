@@ -20,7 +20,7 @@ public class Drivetrain implements Subsystem {
     public static final Drivetrain INSTANCE = new Drivetrain();
 
     //start hardware declaration
-    private GoBildaPinpointDriver imu ;
+    private GoBildaPinpointDriver odo ;
     private MotorEx frontLeftMotor;
     private MotorEx frontRightMotor;
     private MotorEx backLeftMotor;
@@ -39,9 +39,26 @@ public class Drivetrain implements Subsystem {
         backLeftMotor   = OpModeData.hardwareMap.get(MotorEx.class, DriveConstants.BLMotorID);
         backRightMotor  = OpModeData.hardwareMap.get(MotorEx.class, DriveConstants.BRMotorID);
 
-        imu = OpModeData.hardwareMap.get(GoBildaPinpointDriver.class, "odo");
+        odo = OpModeData.hardwareMap.get(GoBildaPinpointDriver.class, "odo");
+        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+          /*
+
+        NOTE: VALUES POTENTIALLY NEED ADJUSTMENT
+
+        Set the direction that each of the two odometry pods count. The X (forward) pod should
+        increase when you move the robot forward. And the Y (strafe) pod should increase when
+        you move the robot to the left.
+         */
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        //odo.setOffsets(0, 0, DistanceUnit.MM); // Have fun with this one :) https://www.gobilda.com/content/user_manuals/3110-0002-0001%20User%20Guide.pdf
+
     }
 
+    @Override
+    public void periodic() {
+        // periodic logic (runs every loop)
+        odo.update();
+    }
     public Drivetrain getInstance(){
         return INSTANCE;
     }
@@ -56,11 +73,11 @@ public class Drivetrain implements Subsystem {
                 double rx = gamepad1.right_stick_x;
 
                 if (gamepad1.aWasReleased()) {
-                    imu.recalibrateIMU(); //recalibrates the IMU without resetting position
+                    odo.recalibrateIMU(); //recalibrates the IMU without resetting position
                 }
 
                 //double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-                double botHeading = imu.getHeading(AngleUnit.RADIANS);
+                double botHeading = odo.getHeading(AngleUnit.RADIANS);
 
                 // Rotate the movement direction counter to the bot's rotation
                 double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
