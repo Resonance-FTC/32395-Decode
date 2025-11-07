@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import androidx.annotation.NonNull;
+
 import com.bylazar.opmodecontrol.OpModeDetails;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.util.Constants.DriveConstants;
@@ -10,6 +12,8 @@ import dev.nextftc.core.components.Component;
 import dev.nextftc.core.subsystems.Subsystem;
 import com.rowanmcalpin.nextftc.ftc.OpModeData;
 import dev.nextftc.ftc.ActiveOpMode;
+import dev.nextftc.ftc.GamepadEx;
+import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.hardware.impl.MotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
@@ -20,7 +24,7 @@ public class Drivetrain implements Subsystem {
     public static final Drivetrain INSTANCE = new Drivetrain();
 
     //start hardware declaration
-    private GoBildaPinpointDriver odo ;
+    public GoBildaPinpointDriver odo ;
     private MotorEx frontLeftMotor;
     private MotorEx frontRightMotor;
     private MotorEx backLeftMotor;
@@ -54,6 +58,13 @@ public class Drivetrain implements Subsystem {
 
     }
 
+    @NonNull
+    @Override
+    public Command getDefaultCommand() {
+        return drive(Gamepads.gamepad1(),false);
+    }
+
+
     @Override
     public void periodic() {
         // periodic logic (runs every loop)
@@ -64,55 +75,52 @@ public class Drivetrain implements Subsystem {
     }
 
     //start command declaration
-    public Command drive(Gamepad gamepad1, boolean isFieldCentric) {
+    public Command drive(GamepadEx gamepad1, boolean isFieldCentric) {
         return new LambdaCommand()
-            .setUpdate(() -> {
+                .setUpdate(() -> {
 
-                double y = gamepad1.left_stick_y;
-                double x = gamepad1.left_stick_x;
-                double rx = gamepad1.right_stick_x;
+                    double y = gamepad1.leftStickY().get();
+                    double x = gamepad1.leftStickX().get();
+                    double rx = gamepad1.rightStickX().get();
 
-                if (gamepad1.aWasReleased()) {
-                    odo.recalibrateIMU(); //recalibrates the IMU without resetting position
-                }
+                    //double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+                    double botHeading = odo.getHeading(AngleUnit.RADIANS);
 
-                //double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-                double botHeading = odo.getHeading(AngleUnit.RADIANS);
-
-                // Rotate the movement direction counter to the bot's rotation
-                double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-                double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-                rotX *= 1.1;
+                    // Rotate the movement direction counter to the bot's rotation
+                    double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+                    double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+                    rotX *= 1.1;
 
 
-                if (isFieldCentric) {
-                    double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-                    double frontLeftPower = (rotY + rotX + rx) / denominator;
-                    double backLeftPower = (rotY - rotX + rx) / denominator;
-                    double frontRightPower = (rotY - rotX - rx) / denominator;
-                    double backRightPower = (rotY + rotX - rx) / denominator;
+                    if (isFieldCentric) {
+                        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+                        double frontLeftPower = (rotY + rotX + rx) / denominator;
+                        double backLeftPower = (rotY - rotX + rx) / denominator;
+                        double frontRightPower = (rotY - rotX - rx) / denominator;
+                        double backRightPower = (rotY + rotX - rx) / denominator;
 
-                    frontLeftMotor.setPower(frontLeftPower);
-                    backLeftMotor.setPower(backLeftPower);
-                    frontRightMotor.setPower(frontRightPower);
-                    backRightMotor.setPower(backRightPower);
-                }
-                else {
-                    double denominator2 = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-                    double frontLeftPower2 = (y + x + rx) / denominator2;
-                    double backLeftPower2 = (y - x + rx) / denominator2;
-                    double frontRightPower2 = (y - x - rx) / denominator2;
-                    double backRightPower2 = (y + x - rx) / denominator2;
+                        frontLeftMotor.setPower(frontLeftPower);
+                        backLeftMotor.setPower(backLeftPower);
+                        frontRightMotor.setPower(frontRightPower);
+                        backRightMotor.setPower(backRightPower);
+                    } else {
+                        double denominator2 = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+                        double frontLeftPower2 = (y + x + rx) / denominator2;
+                        double backLeftPower2 = (y - x + rx) / denominator2;
+                        double frontRightPower2 = (y - x - rx) / denominator2;
+                        double backRightPower2 = (y + x - rx) / denominator2;
 
-                    frontLeftMotor.setPower(frontLeftPower2);
-                    backLeftMotor.setPower(backLeftPower2);
-                    frontRightMotor.setPower(frontRightPower2);
-                    backRightMotor.setPower(backRightPower2);
-                }
+                        frontLeftMotor.setPower(frontLeftPower2);
+                        backLeftMotor.setPower(backLeftPower2);
+                        frontRightMotor.setPower(frontRightPower2);
+                        backRightMotor.setPower(backRightPower2);
+                    }
 
-            })
-            .setIsDone(() -> false)
-            .setInterruptible(true)
-            .named("Drive Command");
+                })
+                .setIsDone(() -> false)
+                .setInterruptible(true)
+                .named("Drive Command")
+                .requires(Drivetrain.INSTANCE);
+    }
     //end command declaration
-}}
+}
