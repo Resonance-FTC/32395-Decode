@@ -1,28 +1,50 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.bylazar.opmodecontrol.OpModeDetails;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
-
+import org.firstinspires.ftc.teamcode.util.Constants.DriveConstants;
 import java.util.function.Supplier;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.components.Component;
+import dev.nextftc.core.subsystems.Subsystem;
+import com.rowanmcalpin.nextftc.ftc.OpModeData;
 import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.impl.MotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.util.Constants.DriveConstants;
-public class Drivetrain implements Component {
+
+public class Drivetrain implements Subsystem {
     public static final Drivetrain INSTANCE = new Drivetrain();
+
     //start hardware declaration
-    private final GoBildaPinpointDriver imu = ActiveOpMode.hardwareMap().get(GoBildaPinpointDriver.class, "odo"); // create IMU instance
-    private final MotorEx frontLeftMotor = ActiveOpMode.hardwareMap().get(MotorEx.class, DriveConstants.FLMotorID);
-    private final MotorEx frontRightMotor = ActiveOpMode.hardwareMap().get(MotorEx.class, DriveConstants.FRMotorID);
-    private final MotorEx backLeftMotor = ActiveOpMode.hardwareMap().get(MotorEx.class, DriveConstants.BLMotorID);
-    private final MotorEx backRightMotor = ActiveOpMode.hardwareMap().get(MotorEx.class, DriveConstants.BRMotorID);
+    private GoBildaPinpointDriver imu ;
+    private MotorEx frontLeftMotor;
+    private MotorEx frontRightMotor;
+    private MotorEx backLeftMotor;
+    private MotorEx backRightMotor;
 
 
     //end hardware declaration - hello :)
+
+    //begin hardware initialization
+
+
+    @Override
+    public void initialize() {
+        frontLeftMotor  = OpModeData.hardwareMap.get(MotorEx.class, DriveConstants.FLMotorID);
+        frontRightMotor = OpModeData.hardwareMap.get(MotorEx.class, DriveConstants.FRMotorID);
+        backLeftMotor   = OpModeData.hardwareMap.get(MotorEx.class, DriveConstants.BLMotorID);
+        backRightMotor  = OpModeData.hardwareMap.get(MotorEx.class, DriveConstants.BRMotorID);
+
+        imu = OpModeData.hardwareMap.get(GoBildaPinpointDriver.class, "odo");
+    }
+
+    public Drivetrain getInstance(){
+        return INSTANCE;
+    }
 
     //start command declaration
     public Command drive(Gamepad gamepad1, boolean isFieldCentric) {
