@@ -32,7 +32,7 @@ public class Drivetrain implements Subsystem {
 
 
     //end hardware declaration - hello :)
-
+    private Supplier<Command> defaultCommandSupplier;
     //begin hardware initialization
 
 
@@ -57,11 +57,13 @@ public class Drivetrain implements Subsystem {
         //odo.setOffsets(0, 0, DistanceUnit.MM); // Have fun with this one :) https://www.gobilda.com/content/user_manuals/3110-0002-0001%20User%20Guide.pdf
 
     }
-
+    public void setDefaultCommand(Command command){
+        defaultCommandSupplier = () -> command;
+    }
     @NonNull
     @Override
     public Command getDefaultCommand() {
-        return drive(Gamepads.gamepad1(),false);
+        return defaultCommandSupplier.get();
     }
 
 
@@ -75,13 +77,13 @@ public class Drivetrain implements Subsystem {
     }
 
     //start command declaration
-    public Command drive(GamepadEx gamepad1, boolean isFieldCentric) {
+    public Command drive(Gamepad gamepad1, boolean isFieldCentric) {
         return new LambdaCommand()
                 .setUpdate(() -> {
 
-                    double y = gamepad1.leftStickY().get();
-                    double x = gamepad1.leftStickX().get();
-                    double rx = gamepad1.rightStickX().get();
+                    double y = gamepad1.left_stick_y;
+                    double x = gamepad1.left_stick_x;
+                    double rx = gamepad1.right_stick_x;
 
                     //double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
                     double botHeading = odo.getHeading(AngleUnit.RADIANS);
