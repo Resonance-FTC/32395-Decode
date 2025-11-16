@@ -38,22 +38,22 @@ public class Drivetrain implements Subsystem {
 
     @Override
     public void initialize() {
-        frontLeftMotor  = OpModeData.hardwareMap.get(MotorEx.class, DriveConstants.FLMotorID);
-        frontRightMotor = OpModeData.hardwareMap.get(MotorEx.class, DriveConstants.FRMotorID);
-        backLeftMotor   = OpModeData.hardwareMap.get(MotorEx.class, DriveConstants.BLMotorID);
-        backRightMotor  = OpModeData.hardwareMap.get(MotorEx.class, DriveConstants.BRMotorID);
+        /*frontLeftMotor  = new MotorEx(DriveConstants.FLMotorID);
+        frontRightMotor = new MotorEx(DriveConstants.FRMotorID);
+        backLeftMotor   = new MotorEx(DriveConstants.BLMotorID);
+        backRightMotor  = new MotorEx(DriveConstants.BRMotorID);
 
         odo = OpModeData.hardwareMap.get(GoBildaPinpointDriver.class, "odo");
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-          /*
+          *//*
 
         NOTE: VALUES POTENTIALLY NEED ADJUSTMENT
 
         Set the direction that each of the two odometry pods count. The X (forward) pod should
         increase when you move the robot forward. And the Y (strafe) pod should increase when
         you move the robot to the left.
-         */
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+         *//*
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);*/
         //odo.setOffsets(0, 0, DistanceUnit.MM); // Have fun with this one :) https://www.gobilda.com/content/user_manuals/3110-0002-0001%20User%20Guide.pdf
 
     }
@@ -66,12 +66,37 @@ public class Drivetrain implements Subsystem {
         return defaultCommandSupplier.get();
     }
 
+    public Command init() {
+        return new LambdaCommand()
+                .setStart(() -> {
+                    frontLeftMotor  = new MotorEx(DriveConstants.FLMotorID);
+                    frontRightMotor = new MotorEx(DriveConstants.FRMotorID);
+                    backLeftMotor   = new MotorEx(DriveConstants.BLMotorID);
+                    backRightMotor  = new MotorEx(DriveConstants.BRMotorID);
 
+                    odo = ActiveOpMode.hardwareMap().get(GoBildaPinpointDriver.class, "odo");
+                    odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+          /*
+
+        NOTE: VALUES POTENTIALLY NEED ADJUSTMENT
+
+        Set the direction that each of the two odometry pods count. The X (forward) pod should
+        increase when you move the robot forward. And the Y (strafe) pod should increase when
+        you move the robot to the left.
+         */
+                    odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+                })
+                .setIsDone(() -> true)
+                .setInterruptible(true)
+                .named("Drivetrain Init Command")
+                .requires(Drivetrain.INSTANCE);
+    }
     @Override
     public void periodic() {
         // periodic logic (runs every loop)
         odo.update();
     }
+
     public Drivetrain getInstance(){
         return INSTANCE;
     }

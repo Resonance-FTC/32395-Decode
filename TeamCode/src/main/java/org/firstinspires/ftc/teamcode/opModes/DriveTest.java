@@ -18,10 +18,13 @@ public class DriveTest extends NextFTCOpMode {
     }
 
     @Override public void onInit() {
-        Drivetrain.INSTANCE.setDefaultCommand(Drivetrain.INSTANCE.drive(gamepad1, false));
+
     }
-    @Override public void onWaitForStart() { Drivetrain.INSTANCE.odo.resetPosAndIMU(); }
-    @Override public void onStartButtonPressed() { }
+    @Override public void onWaitForStart() {  }
+    @Override public void onStartButtonPressed() {
+        Drivetrain.INSTANCE.init();
+        Drivetrain.INSTANCE.odo.resetPosAndIMU();
+        Drivetrain.INSTANCE.setDefaultCommand(Drivetrain.INSTANCE.drive(gamepad1, false)); }
     @Override public void onUpdate() {
         telemetry.addData("Left Stick X:", gamepad1.left_stick_x);
         telemetry.addData("Left Stick Y:", gamepad1.left_stick_y);
