@@ -21,6 +21,7 @@ import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.impl.MotorEx;
 
 public class Shooter implements Component {
+    //TODO Turn into a SubsystemGroup with Flywheel and Turret as subsystems
     public static final Shooter INSTANCE = new Shooter();
     //start hardware declaration
     private final MotorEx shooterMotor = ActiveOpMode.hardwareMap().get(MotorEx.class, Constants.shooterConstants.shooterMotorID);
