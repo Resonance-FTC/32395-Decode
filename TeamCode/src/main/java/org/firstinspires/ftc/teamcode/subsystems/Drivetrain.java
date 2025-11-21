@@ -10,6 +10,8 @@ import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.components.Component;
 import dev.nextftc.core.subsystems.Subsystem;
+
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.rowanmcalpin.nextftc.ftc.OpModeData;
 import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.ftc.GamepadEx;
@@ -32,6 +34,9 @@ public class Drivetrain implements Subsystem {
 
     //end hardware declaration - hello :)
     private Supplier<Command> defaultCommandSupplier;
+
+    public Drivetrain(Gamepad gamepad, HardwareMap hardwareDevices) {
+    }
     //begin hardware initialization
 
 
