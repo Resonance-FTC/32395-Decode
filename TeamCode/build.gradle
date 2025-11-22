@@ -33,8 +33,6 @@ repositories {
 }
 dependencies {
     implementation project(':FtcRobotController')
-    implementation 'dev.nextftc:ftc:1.0.0'
-    implementation 'dev.nextftc:hardware:1.0.0' // If you would like to use the hardware module
     implementation("page.j5155.AdvantageScope:lite:v26.0.0")
     implementation "dev.frozenmilk.dairy:MercurialFTC:2.0.0-beta1"
 

@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode.opModes;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.util.Constants;
+
 import dev.frozenmilk.dairy.mercurial.continuations.Closure;
 import dev.frozenmilk.dairy.mercurial.continuations.Continuation;
 import dev.frozenmilk.dairy.mercurial.continuations.Continuations;
@@ -16,10 +19,10 @@ public class Drive {
     public Closure driveClosure;
 
     public Drive(Gamepad gamepad, HardwareMap hardwareMap) {
-        this.fL = hardwareMap.get(DcMotorEx.class, "frontLeft");
-        this.fR = hardwareMap.get(DcMotorEx.class, "frontRight");
-        this.bL = hardwareMap.get(DcMotorEx.class, "backLeft");
-        this.bR = hardwareMap.get(DcMotorEx.class, "backRight");
+        this.fL = hardwareMap.get(DcMotorEx.class, Constants.DriveConstants.FLMotorID);
+        this.fR = hardwareMap.get(DcMotorEx.class, Constants.DriveConstants.FRMotorID);
+        this.bL = hardwareMap.get(DcMotorEx.class, Constants.DriveConstants.BLMotorID);
+        this.bR = hardwareMap.get(DcMotorEx.class, Constants.DriveConstants.BRMotorID);
 
         driveClosure = Continuations.exec(() -> {
             double y = -gamepad.left_stick_y;

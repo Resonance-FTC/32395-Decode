@@ -21,7 +21,6 @@ dependencies {
     implementation 'org.firstinspires.ftc:Vision:11.0.0'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation("dev.frozenmilk.dairy:MercurialFTC:2.0.0-beta1")
-    implementation 'com.rowanmcalpin.nextftc:ftc:0.5.6-beta'
     implementation 'com.pedropathing:ftc:2.0.2'
     implementation 'com.pedropathing:telemetry:1.0.0'
     implementation 'com.bylazar:fullpanels:1.0.6'

@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.opModes;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.util.Constants;
+
 /**
  * Simple Java translation of the Flywheel subsystem.
  * Handles SPIN / STOP actions and applies motor power in update().
@@ -18,12 +20,12 @@ public class Flywheel {
         STOP
     }
 
-    private final DcMotorEx flywheel1Motor;
+    private final DcMotorEx flywheelMotor;
     private volatile State state = State.STOPPED;
 
     public Flywheel(HardwareMap hardwareMap) {
         // Use HardwareMap to obtain the DcMotorEx instance
-        this.flywheel1Motor = hardwareMap.get(DcMotorEx.class, "f1M");
+        this.flywheelMotor = hardwareMap.get(DcMotorEx.class, Constants.shooterConstants.shooterMotorID);
     }
 
     // Handle actions and update internal state
@@ -43,10 +45,10 @@ public class Flywheel {
     public void update() {
         switch (state) {
             case SPINNING:
-                flywheel1Motor.setPower(1.0);
+                flywheelMotor.setPower(1.0);
                 break;
             case STOPPED:
-                flywheel1Motor.setPower(0.0);
+                flywheelMotor.setPower(0.0);
                 break;
         }
     }
