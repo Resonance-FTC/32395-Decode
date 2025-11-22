@@ -228,7 +228,6 @@ public class CachingDcMotorEx implements DcMotorEx {
     public void setMotorEnable() {
         dcMotorEx.setMotorEnable();
     }
-
     @Override
     public void setMotorDisable() {
         dcMotorEx.setMotorDisable();

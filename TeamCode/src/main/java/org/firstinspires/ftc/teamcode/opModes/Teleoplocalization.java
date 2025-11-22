@@ -47,4 +47,7 @@ public class Teleoplocalization {
         }
         return(null);
     }
+    public Pose2D getPose(){
+        return pinpoint.getPosition();
+    }
 }

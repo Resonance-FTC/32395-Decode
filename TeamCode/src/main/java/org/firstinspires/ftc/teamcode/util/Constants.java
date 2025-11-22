@@ -21,6 +21,8 @@ public class Constants {
     public static class shooterConstants{
         public static String shooterMotorID = "shooterMotor";
         public static String turretMotorID = "turretMotor";
+        public static String hoodServoID = "hoodServo";
+        public static double shooterTicksPerRevolution = 384.5;
         public static double turretP = 1;
         public static double turretI = 0;
         public static double turretD = 0;
