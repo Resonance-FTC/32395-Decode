@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
+import org.firstinspires.ftc.teamcode.util.CachingDcMotorEx;
+import org.firstinspires.ftc.teamcode.util.CachingServo;
 import org.firstinspires.ftc.teamcode.util.Constants;
 
 import dev.frozenmilk.dairy.mercurial.continuations.Closure;
@@ -13,12 +15,12 @@ import dev.frozenmilk.dairy.mercurial.continuations.Continuations;
 
 public class turret {
 
-    public DcMotorEx turretMotor;
+    public CachingDcMotorEx turretMotor;
     public Closure turretClosure;
-    public ServoImplEx hoodServo;
+    public CachingServo hoodServo;
 
     public turret(HardwareMap hardwareMap) {
-        this.turretMotor = hardwareMap.get(DcMotorEx.class, Constants.shooterConstants.turretMotorID);
+        this.turretMotor = hardwareMap.get(CachingDcMotorEx.class, Constants.shooterConstants.turretMotorID);
         Teleoplocalization localization = new Teleoplocalization(hardwareMap);
 
 

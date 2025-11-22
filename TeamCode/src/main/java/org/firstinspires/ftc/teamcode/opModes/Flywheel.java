@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opModes;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.util.CachingDcMotorEx;
 import org.firstinspires.ftc.teamcode.util.Constants;
 
 /**
@@ -20,12 +21,12 @@ public class Flywheel {
         STOP
     }
 
-    private final DcMotorEx flywheelMotor;
+    private final CachingDcMotorEx flywheelMotor;
     private volatile State state = State.STOPPED;
 
     public Flywheel(HardwareMap hardwareMap) {
         // Use HardwareMap to obtain the DcMotorEx instance
-        this.flywheelMotor = hardwareMap.get(DcMotorEx.class, Constants.shooterConstants.shooterMotorID);
+        this.flywheelMotor = hardwareMap.get(CachingDcMotorEx.class, Constants.shooterConstants.shooterMotorID);
     }
 
     // Handle actions and update internal state
