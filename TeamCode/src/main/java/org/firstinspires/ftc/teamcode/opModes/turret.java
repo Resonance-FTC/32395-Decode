@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.opModes;
 
-import com.pedropathing.control.PIDFCoefficients;
-
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -13,6 +10,7 @@ import org.firstinspires.ftc.teamcode.util.Constants;
 
 import dev.frozenmilk.dairy.mercurial.continuations.Closure;
 import dev.frozenmilk.dairy.mercurial.continuations.Continuations;
+
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
 
