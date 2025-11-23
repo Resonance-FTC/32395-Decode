@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.util;
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 
-import dev.nextftc.ftc.ActiveOpMode;
 
 public class Constants {
     public static class DriveConstants{

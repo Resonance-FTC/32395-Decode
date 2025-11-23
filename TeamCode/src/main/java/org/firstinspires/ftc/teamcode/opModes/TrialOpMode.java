@@ -17,7 +17,7 @@ public class TrialOpMode {
         // make sure we have some new state
         State state = new State();
         Drive drive = new Drive(ctx.gamepad1(), ctx.hardwareMap());
-        Flywheel flywheel = new Flywheel(ctx.hardwareMap());
+        //Flywheel flywheel = new Flywheel(ctx.hardwareMap());
         // POV drive
         ctx.schedule(
                 sequence(
@@ -43,10 +43,10 @@ public class TrialOpMode {
                 exec(() -> state.throttle = 1.0)
         );
 
-        ctx.bindSpawn(
-                ctx.risingEdge(() -> ctx.gamepad2().right_bumper ),
-                exec(() -> flywheel.handleAction(Flywheel.Actions.SPIN))
-        );
+        //ctx.bindSpawn(
+        //        ctx.risingEdge(() -> ctx.gamepad2().right_bumper ),
+        //        exec(() -> flywheel.handleAction(Flywheel.Actions.SPIN))
+        //);
 
         ctx.dropToScheduler();
     });
