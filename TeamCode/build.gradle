@@ -38,5 +38,6 @@ dependencies {
     implementation project(':FtcRobotController')
     implementation("page.j5155.AdvantageScope:lite:v26.0.0")
     implementation "dev.frozenmilk.dairy:MercurialFTC:2.0.0-beta1"
-
+    implementation "com.bylazar:configurables:1.0.4"
+    implementation "dev.frozenmilk.dairy:CachingHardware:1.0.0"
 }

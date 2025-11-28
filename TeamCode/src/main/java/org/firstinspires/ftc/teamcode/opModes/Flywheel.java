@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.opModes;
 
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.util.CachingDcMotorEx;
 import org.firstinspires.ftc.teamcode.util.Constants;
 
 /**

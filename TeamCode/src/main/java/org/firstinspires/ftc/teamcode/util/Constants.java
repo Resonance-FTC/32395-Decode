@@ -39,6 +39,6 @@ public class Constants {
 
     public static class robotConstants {
         //Must be in KG
-        public static double mass = 20;
+        public static double mass = 6;
     }
 }

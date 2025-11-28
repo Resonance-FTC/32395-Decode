@@ -28,6 +28,7 @@ public class Teleoplocalization {
         limelight.start();
 
         LocalizationClosure = Continuations.exec(() -> {
+            pinpoint.update();
             Pose3D limelightPose = calculateLimelightPose();
             Pose2D pinpointPose = pinpoint.getPosition();
 
@@ -37,8 +38,6 @@ public class Teleoplocalization {
 
     public Pose3D calculateLimelightPose() {
         limelight.updateRobotOrientation(pinpoint.getHeading(AngleUnit.DEGREES));
-        pinpoint.update();
-        pinpoint.getPosition();
         LLResult result = limelight.getLatestResult();
         if (result != null){
             if (result.isValid()) {
@@ -46,6 +45,9 @@ public class Teleoplocalization {
             }
         }
         return(null);
+    }
+    public void update(){
+        pinpoint.update();
     }
     public Pose2D getPose(){
         return pinpoint.getPosition();
