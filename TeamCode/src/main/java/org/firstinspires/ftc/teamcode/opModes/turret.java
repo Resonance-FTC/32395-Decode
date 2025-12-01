@@ -66,13 +66,12 @@ public class turret {
             double angleToGoal = Math.toDegrees(Math.atan2(deltaY, deltaX));
 
             // corrected turret heading in [-180,180]
-            double correctedAngleToGoal = normalizeAngle(angleToGoal - robotHeading - startHeadingOffsetDeg);
 
             // current turret absolute angle from encoder (may be relative but this maps ticks->deg)
             double currentAngleDeg = turretMotor.getCurrentPosition() / ticksPerDegree;
 
             // choose the nearest equivalent of correctedAngleToGoal to the current encoder angle
-            double targetAngleDeg = chooseNearestEquivalent(correctedAngleToGoal, currentAngleDeg);
+            double targetAngleDeg = chooseNearestEquivalent(angleToGoal, currentAngleDeg);
 
             double targetTicks = targetAngleDeg * ticksPerDegree;
             controlSystem.setGoal(new KineticState(targetTicks));
@@ -82,15 +81,10 @@ public class turret {
                             new KineticState(turretMotor.getCurrentPosition(), turretMotor.getVelocity())
                     )
             );
+
         });
     }
 
-    private static double normalizeAngle(double angleDeg) {
-        double a = angleDeg;
-        while (a > 180.0) a -= 360.0;
-        while (a <= -180.0) a += 360.0;
-        return a;
-    }
 
     private static double chooseNearestEquivalent(double baseNormalizedDeg, double referenceContinuousDeg) {
         double n = Math.round((referenceContinuousDeg - baseNormalizedDeg) / 360.0);
@@ -100,11 +94,11 @@ public class turret {
     public void captureStartHeadingOffset() {
         Pose pose = follower.getPose();
         if (pose != null) {
-            startHeadingOffsetDeg = normalizeAngle(Math.toDegrees(pose.getHeading()));
+            startHeadingOffsetDeg = Math.toDegrees(pose.getHeading());
         }
     }
 
     public void setStartHeadingOffsetDeg(double offsetDeg) {
-        startHeadingOffsetDeg = normalizeAngle(offsetDeg);
+        startHeadingOffsetDeg = offsetDeg;
     }
 }
