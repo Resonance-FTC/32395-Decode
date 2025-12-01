@@ -1,6 +1,13 @@
+// java
+package org.firstinspires.ftc.teamcode.opModes;
 
-        package org.firstinspires.ftc.teamcode.opModes;
-
+import com.bylazar.configurables.annotations.Configurable;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.ftc.InvertedFTCCoordinates;
+import com.pedropathing.ftc.PoseConverter;
+import com.pedropathing.geometry.PedroCoordinates;
+import com.pedropathing.geometry.Pose;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -16,127 +23,66 @@ import dev.frozenmilk.dairy.mercurial.continuations.Continuations;
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
 
+@Configurable
 public class turret {
 
     public CachingDcMotorEx turretMotor;
     public Closure targetLockClosure;
-    public CachingServo hoodServo;
     private final Constants.AllianceColors currentAlliance;
-    private final Teleoplocalization localization;
-    private double startHeadingOffsetDeg = 0.0; // offset applied to corrected angle
+    public static double startHeadingOffsetDeg = 0.0;
 
-    // Relative-encoder handling
-    private double continuousAngleDeg = 0.0; // accumulated angle from encoder deltas
     private final double ticksPerDegree;
-    private final int maxContinuousRevolutions = 2; // configurable limit
-    private final double maxContinuousAngleDeg;
+    private final long ticksPerRevolution;
+    private final Follower follower;
 
-    ControlSystem controlSystem = ControlSystem.builder()
+    private final ControlSystem controlSystem = ControlSystem.builder()
             .posPid(Constants.shooterConstants.turretP, Constants.shooterConstants.turretI, Constants.shooterConstants.turretD)
             .build();
 
-    public turret(HardwareMap hardwareMap, Constants.AllianceColors alliance) {
-        this.turretMotor = hardwareMap.get(CachingDcMotorEx.class, Constants.shooterConstants.turretMotorID);
-        this.hoodServo = hardwareMap.get(CachingServo.class, Constants.shooterConstants.hoodServoID);
-        this.localization = new Teleoplocalization(hardwareMap);
+    public turret(HardwareMap hardwareMap, Constants.AllianceColors alliance, Follower follower) {
+        this.turretMotor = new CachingDcMotorEx(hardwareMap.get(DcMotorEx.class, Constants.shooterConstants.turretMotorID));
         this.currentAlliance = alliance;
+        this.follower = follower;
 
         this.ticksPerDegree = Constants.shooterConstants.shooterTicksPerRevolution / 360.0;
-        this.maxContinuousAngleDeg = maxContinuousRevolutions * 360.0;
-
-        // initialize encoder tracking
-        this.continuousAngleDeg = (turretMotor.getCurrentPosition() / ticksPerDegree); // starting baseline
+        this.ticksPerRevolution = Math.round(Constants.shooterConstants.shooterTicksPerRevolution);
 
         targetLockClosure = Continuations.exec(() -> {
-            Pose2D pose = localization.getPose();
-            double robotX = pose.getX(DistanceUnit.INCH);
-            double robotY = pose.getY(DistanceUnit.INCH);
-            double robotHeading = pose.getHeading(AngleUnit.DEGREES);
+            // get robot pose
+            Pose pose = follower.getPose();
+            if (pose == null) return;
+
+            double robotX = pose.getAsCoordinateSystem(PedroCoordinates.INSTANCE).getX();
+            double robotY = pose.getAsCoordinateSystem(PedroCoordinates.INSTANCE).getY();
+            double robotHeading = Math.toDegrees(follower.getHeading());
 
             double goalX = -58.3727;
             double goalY = (currentAlliance == Constants.AllianceColors.RED) ? 55.6425 : -55.6425;
 
-            double deltaX = goalX - robotX;
-            double deltaY = goalY - robotY;
+            Pose goalPose = PoseConverter.pose2DToPose(new Pose2D(DistanceUnit.INCH, goalX, goalY, AngleUnit.DEGREES, 30), InvertedFTCCoordinates.INSTANCE);
+
+            double deltaX = goalPose.getAsCoordinateSystem(PedroCoordinates.INSTANCE).getX() - robotX;
+            double deltaY = goalPose.getAsCoordinateSystem(PedroCoordinates.INSTANCE).getY() - robotY;
             double angleToGoal = Math.toDegrees(Math.atan2(deltaY, deltaX));
 
-            double correctedAngleToGoal = getCorrectedAngleToGoal(angleToGoal, robotHeading, startHeadingOffsetDeg);
+            // corrected turret heading in [-180,180]
+            double correctedAngleToGoal = normalizeAngle(angleToGoal - robotHeading - startHeadingOffsetDeg);
 
-            // Update continuous angle from relative encoder deltas
-            updateContinuousAngleFromEncoder();
+            // current turret absolute angle from encoder (may be relative but this maps ticks->deg)
+            double currentAngleDeg = turretMotor.getCurrentPosition() / ticksPerDegree;
 
-            // Choose the target angle (in continuous space) that is the nearest equivalent to correctedAngleToGoal
-            double targetAngleDeg = chooseNearestEquivalent(correctedAngleToGoal, continuousAngleDeg);
+            // choose the nearest equivalent of correctedAngleToGoal to the current encoder angle
+            double targetAngleDeg = chooseNearestEquivalent(correctedAngleToGoal, currentAngleDeg);
 
-            // Enforce maximum continuous rotation allowed; if required motion exceeds the limit, pull it back by 360-degree steps
-            targetAngleDeg = enforceMaxContinuousRotation(targetAngleDeg, continuousAngleDeg);
-
-            // Convert degrees to motor ticks
             double targetTicks = targetAngleDeg * ticksPerDegree;
-
             controlSystem.setGoal(new KineticState(targetTicks));
 
-            // Current state: use raw encoder ticks and motor velocity (ticks and ticks/sec)
             turretMotor.setPower(
                     controlSystem.calculate(
                             new KineticState(turretMotor.getCurrentPosition(), turretMotor.getVelocity())
                     )
             );
         });
-    }
-
-    private void updateContinuousAngleFromEncoder() {
-        long currentTicks = turretMotor.getCurrentPosition();
-        continuousAngleDeg = currentTicks / ticksPerDegree;
-    }
-
-    /**
-     * Pick the nearest equivalent angle to the current continuous angle by adding/subtracting 360*n
-     */
-    private double chooseNearestEquivalent(double baseNormalizedDeg, double referenceContinuousDeg) {
-        // baseNormalizedDeg is in [-180, 180]
-        double n = Math.round((referenceContinuousDeg - baseNormalizedDeg) / 360.0);
-        return baseNormalizedDeg + n * 360.0;
-    }
-
-    /**
-     * Ensure the turret won't be commanded to rotate more than configured continuous revolutions.
-     * If the delta is larger than allowed, step the target by +/-360 until within limit.
-     */
-    private double enforceMaxContinuousRotation(double targetDeg, double currentDeg) {
-        if (Math.abs(targetDeg) <= maxContinuousAngleDeg) return targetDeg;
-        double delta = targetDeg - currentDeg;
-        // If delta too large, reduce by whole 360-degree steps toward the current angle until within limit
-        double ceil = Math.ceil((Math.abs(delta) - maxContinuousAngleDeg) / 360.0);
-        if (delta > 0) {
-            targetDeg -= ceil * 360.0;
-        } else {
-            targetDeg += ceil * 360.0;
-        }
-        return targetDeg;
-    }
-
-    /**
-     * Capture the robot heading at the start of the opmode and use it as the turret offset.
-     * Call this from opmode init after localization is valid.
-     */
-    public void captureStartHeadingOffset() {
-        Pose2D pose = localization.getPose();
-        if (pose != null) {
-            this.startHeadingOffsetDeg = normalizeAngle(pose.getHeading(AngleUnit.DEGREES));
-        }
-    }
-
-    /**
-     * Manually set a start heading offset in degrees. Useful if you want to override the captured value.
-     */
-    public void setStartHeadingOffsetDeg(double offsetDeg) {
-        this.startHeadingOffsetDeg = normalizeAngle(offsetDeg);
-    }
-
-    private static double getCorrectedAngleToGoal(double angleToGoal, double robotHeading, double startOffsetDeg) {
-        double corrected = angleToGoal - robotHeading - startOffsetDeg;
-        return normalizeAngle(corrected);
     }
 
     private static double normalizeAngle(double angleDeg) {
@@ -146,4 +92,19 @@ public class turret {
         return a;
     }
 
+    private static double chooseNearestEquivalent(double baseNormalizedDeg, double referenceContinuousDeg) {
+        double n = Math.round((referenceContinuousDeg - baseNormalizedDeg) / 360.0);
+        return baseNormalizedDeg + n * 360.0;
+    }
+
+    public void captureStartHeadingOffset() {
+        Pose pose = follower.getPose();
+        if (pose != null) {
+            startHeadingOffsetDeg = normalizeAngle(Math.toDegrees(pose.getHeading()));
+        }
+    }
+
+    public void setStartHeadingOffsetDeg(double offsetDeg) {
+        startHeadingOffsetDeg = normalizeAngle(offsetDeg);
+    }
 }

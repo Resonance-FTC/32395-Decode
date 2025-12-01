@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.util.Constants;
 
+import dev.frozenmilk.dairy.cachinghardware.CachingDcMotorEx;
+
 /**
  * Simple Java translation of the Flywheel subsystem.
  * Handles SPIN / STOP actions and applies motor power in update().

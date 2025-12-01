@@ -17,9 +17,10 @@ import java.util.function.Supplier;
 
 @Configurable
 @TeleOp
-public class ExampleTeleOp extends OpMode {
+public class ExampleTeleOp extends OpMode{
+
     private Follower follower;
-    public static Pose startingPose = new Pose(0,0, 0); //See ExampleAuto to understand how to use this
+    private Pose startPose = new Pose(18.608, 119.523, Math.toRadians(-35));
     private boolean automatedDrive;
     private Supplier<PathChain> pathChain;
     private TelemetryManager telemetryM;
@@ -29,7 +30,7 @@ public class ExampleTeleOp extends OpMode {
     @Override
     public void init() {
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
+        follower.setStartingPose(startPose);
         follower.update();
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
 
