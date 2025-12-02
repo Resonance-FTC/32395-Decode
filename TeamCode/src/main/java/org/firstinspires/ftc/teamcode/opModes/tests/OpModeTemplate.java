@@ -15,7 +15,7 @@ import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.subsystems.turret;
+import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.util.Constants;
 
 import java.util.function.Supplier;
@@ -46,23 +46,23 @@ public class OpModeTemplate {
                 .build();
         // make sure we have some new state
         State state = new State();
-        turret Turret = new turret(ctx.hardwareMap(), Constants.AllianceColors.BLUE, follower);
+        Turret turret = new Turret(ctx.hardwareMap(), Constants.AllianceColors.BLUE, follower);
         //Flywheel flywheel = new Flywheel(ctx.hardwareMap());
         // POV drive
         ctx.schedule(
                 sequence(
                         // wait can also take a boolean supplier,
-                        // we'll start this process now,
-                        // but it will wait until we press play to actually start running
+                        // we'll start this process nw,
+                        // but it will wait until we opress play to actually start running
                         waitUntil(ctx::inLoop),
                         sequence(exec(() -> {
                                     follower.startTeleopDrive();
                                 }),
                                 loop(
                                         sequence(
-                                            Turret.targetLockClosure,
+                                            turret.targetLockClosure,
                                             exec(() -> {
-                                                looping(ctx.gamepad1(), Turret);
+                                                looping(ctx.gamepad1(), turret);
                                             })
                                         )
                                 )
@@ -80,10 +80,10 @@ public class OpModeTemplate {
 
         ctx.dropToScheduler();
     });
-    public static void looping(Gamepad gamepad1, turret Turret) {
+    public static void looping(Gamepad gamepad1, Turret turret) {
         follower.update();
         telemetryM.update();
-        telemetryM.addData("Position: ", Turret.getPosition());
+        telemetryM.addData("Position: ", turret.getPosition());
         if (!automatedDrive) {
             //Make the last parameter false for field-centric
             //In case the drivers want to use a "slowMode" you can scale the vectors

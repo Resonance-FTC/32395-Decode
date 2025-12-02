@@ -24,7 +24,7 @@ import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
 
 @Configurable
-public class turret {
+public class Turret {
 
     public CachingDcMotorEx turretMotor;
     public Closure targetLockClosure;
@@ -39,7 +39,7 @@ public class turret {
             .posPid(Constants.shooterConstants.turretP, Constants.shooterConstants.turretI, Constants.shooterConstants.turretD)
             .build();
 
-    public turret(HardwareMap hardwareMap, Constants.AllianceColors alliance, Follower follower) {
+    public Turret(HardwareMap hardwareMap, Constants.AllianceColors alliance, Follower follower) {
         this.turretMotor = new CachingDcMotorEx(hardwareMap.get(DcMotorEx.class, Constants.shooterConstants.turretMotorID));
         this.currentAlliance = alliance;
         this.follower = follower;
