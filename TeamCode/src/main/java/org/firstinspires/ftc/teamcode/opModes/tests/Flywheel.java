@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opModes;
+package org.firstinspires.ftc.teamcode.opModes.tests;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 

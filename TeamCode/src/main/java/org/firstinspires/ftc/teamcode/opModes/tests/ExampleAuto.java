@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opModes; // make sure this aligns with class location
+package org.firstinspires.ftc.teamcode.opModes.tests; // make sure this aligns with class location
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
