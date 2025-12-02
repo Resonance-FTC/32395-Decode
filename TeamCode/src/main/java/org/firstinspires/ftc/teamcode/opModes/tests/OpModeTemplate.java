@@ -62,7 +62,7 @@ public class OpModeTemplate {
                                         sequence(
                                             Turret.targetLockClosure,
                                             exec(() -> {
-                                                looping(ctx.gamepad1());
+                                                looping(ctx.gamepad1(), Turret);
                                             })
                                         )
                                 )
@@ -80,10 +80,10 @@ public class OpModeTemplate {
 
         ctx.dropToScheduler();
     });
-    public static void looping(Gamepad gamepad1) {
+    public static void looping(Gamepad gamepad1, turret Turret) {
         follower.update();
         telemetryM.update();
-
+        telemetryM.addData("Position: ", Turret.getPosition());
         if (!automatedDrive) {
             //Make the last parameter false for field-centric
             //In case the drivers want to use a "slowMode" you can scale the vectors

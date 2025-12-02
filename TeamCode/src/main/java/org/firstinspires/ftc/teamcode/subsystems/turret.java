@@ -7,6 +7,7 @@ import com.pedropathing.ftc.InvertedFTCCoordinates;
 import com.pedropathing.ftc.PoseConverter;
 import com.pedropathing.geometry.PedroCoordinates;
 import com.pedropathing.geometry.Pose;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -45,7 +46,7 @@ public class turret {
 
         this.ticksPerDegree = Constants.shooterConstants.shooterTicksPerRevolution / 360.0;
         this.ticksPerRevolution = Math.round(Constants.shooterConstants.shooterTicksPerRevolution);
-
+        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         targetLockClosure = Continuations.exec(() -> {
             // get robot pose
             Pose pose = follower.getPose();
@@ -97,6 +98,9 @@ public class turret {
         }
     }
 
+    public double getPosition() {
+        return (turretMotor.getCurrentPosition() / ticksPerDegree);
+    }
     public void setStartHeadingOffsetDeg(double offsetDeg) {
         startHeadingOffsetDeg = offsetDeg;
     }
