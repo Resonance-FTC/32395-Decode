@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.util;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.CRServoImpl;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class AnalogCrServo {
@@ -13,6 +15,13 @@ public class AnalogCrServo {
         this.analogInput = hardwareMap.get(AnalogInput.class, analogInputName);
     }
 
+    public void setPower(Double power){
+        servo.setPower(power);
+    }
+
+    public void setDirection(DcMotorSimple.Direction direction){
+        servo.setDirection(direction);
+    }
     public double getPosition(){
         return analogInput.getVoltage() / 3.3 * 360;
     }
