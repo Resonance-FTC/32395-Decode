@@ -41,4 +41,11 @@ public class Constants {
         //Must be in KG
         public static double mass = 6;
     }
+    public enum AutoOptions {
+        BOTTOMFULL,
+        TOPFULL,
+        PARKONLY,
+        BOTTOMTWOONLY,
+        TOPTWOONLY
+    }
 }

@@ -4,6 +4,7 @@ import static dev.frozenmilk.dairy.mercurial.continuations.Continuations.command
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -21,8 +22,9 @@ import dev.frozenmilk.dairy.mercurial.continuations.Continuations.Command;
 public class Drivetrain {
 
     private double speed = 1.0;
-    private Gamepad gamepad;
+    private final Gamepad gamepad;
     public Follower follower;
+
     public Drivetrain(HardwareMap hardwareMap, Gamepad gamepad, Pose startPose) {
         this.gamepad = gamepad;
 
@@ -30,22 +32,36 @@ public class Drivetrain {
         follower.setStartingPose(startPose);
         follower.update();
     }
-    public Command followPath(Supplier<PathChain> pathChainSupplier){
+
+    public Command followPath(PathChain pathChainSupplier) {
         return command()
-                .setInit(()-> {
+                .setInit(() -> {
                     follower.breakFollowing();
-                    follower.followPath(pathChainSupplier.get());
+                    follower.followPath(pathChainSupplier);
                 })
                 .setFinished(() -> !follower.isBusy() || gamepad.bWasPressed());
     }
-    public void drive(){
-        follower.startTeleopDrive();
-        follower.setTeleOpDrive(
-                -gamepad.left_stick_y * speed,
-                -gamepad.left_stick_x * speed,
-                -gamepad.right_stick_x * speed,
-                true);
+    public Command followPath(Path path) {
+        return command()
+                .setInit(() -> {
+                    follower.breakFollowing();
+                    follower.followPath(path);
+                })
+                .setFinished(() -> !follower.isBusy() || gamepad.bWasPressed());
     }
+
+
+    public Command drive() {
+        return command()
+                .setExecute(() -> {
+                    follower.setTeleOpDrive(
+                            -gamepad.left_stick_y * speed,
+                            -gamepad.left_stick_x * speed,
+                            -gamepad.right_stick_x * speed,
+                            true);
+                }).setFinished(() -> gamepad.aWasPressed());
+    }
+
     public void setSpeed(double speed){
         this.speed = speed;
         follower.setTeleOpDrive(

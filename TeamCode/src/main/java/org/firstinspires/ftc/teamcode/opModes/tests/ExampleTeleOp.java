@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 public class ExampleTeleOp extends OpMode{
 
     private Follower follower;
-    private Pose startPose = new Pose(18.608, 119.523, Math.toRadians(-35));
+    private final Pose startPose = new Pose(18.608, 119.523, Math.toRadians(-35));
     private boolean automatedDrive;
     private Supplier<PathChain> pathChain;
     private TelemetryManager telemetryM;

@@ -19,11 +19,11 @@ public class ExampleAuto extends OpMode {
 
     private int pathState;
     private PathChain Path1, Path3, Path4,Path5;
-    private Pose startPose = new Pose(18.608, 119.523, Math.toRadians(-35));
+    private final Pose startPose = new Pose(18.608, 119.523, Math.toRadians(-35));
 
-    private Pose scorePose = new Pose(50, 100);
+    private final Pose scorePose = new Pose(50, 100);
 
-    private Pose pickup1Pose = new Pose(31, 100);
+    private final Pose pickup1Pose = new Pose(31, 100);
     public void buildPaths() {
         Path1 = follower
                 .pathBuilder()

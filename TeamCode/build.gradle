@@ -14,10 +14,14 @@
 // Include common definitions from above.
 apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
+apply plugin: 'org.jetbrains.kotlin.android'
 // there should be 2 or 3 more lines that start with 'apply plugin:' here
 
 android {
     namespace = 'org.firstinspires.ftc.teamcode'
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 
     packagingOptions {
         jniLibs.useLegacyPackaging true
@@ -40,4 +44,5 @@ dependencies {
     implementation "dev.frozenmilk.dairy:MercurialFTC:2.0.0-beta1"
     implementation "com.bylazar:configurables:1.0.4"
     implementation "dev.frozenmilk.dairy:CachingHardware:1.0.0"
+    implementation 'androidx.core:core-ktx:1.17.0'
 }

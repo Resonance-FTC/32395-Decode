@@ -13,7 +13,6 @@ import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.util.Constants;
 
-import java.util.function.Supplier;
 
 import dev.frozenmilk.dairy.mercurial.ftc.Mercurial;
 
@@ -27,7 +26,7 @@ public class Teleop {
         Follower follower = drivetrain.follower;
         Turret turret = new Turret(ctx.hardwareMap(), Constants.AllianceColors.BLUE, follower);
 
-        Supplier<PathChain> pathChain = () -> follower.pathBuilder() //Lazy Curve Generation
+        PathChain pathChain = follower.pathBuilder() //Lazy Curve Generation
                 .addPath(new Path(new BezierLine(follower::getPose, new Pose(30, 0))))
                 .setHeadingInterpolation(HeadingInterpolator.linearFromPoint(follower::getHeading, Math.toRadians(45), 0.8))
                 .build();
@@ -35,9 +34,7 @@ public class Teleop {
         ctx.schedule(
                 sequence(
                         waitUntil(ctx::inLoop),
-                        exec(()-> {
-                            follower.startTeleopDrive();
-                        }),
+                        exec(follower::startTeleopDrive),
                         parallel(
                                 loop(
                                         turret.targetLockClosure
@@ -48,7 +45,10 @@ public class Teleop {
         );
 
         ctx.bindExec(() -> ctx.gamepad1().aWasPressed(),
-                drivetrain.followPath(pathChain)
+                sequence(
+                        drivetrain.followPath(pathChain),
+                        drivetrain.drive()
+                )
         );
 
         ctx.bindSpawn(ctx.risingEdge( ()-> ctx.gamepad1().right_bumper),

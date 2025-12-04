@@ -27,7 +27,7 @@ public class OpModeTemplate {
     private static class State {
     }
     private static Follower follower;
-    private static Pose startPose = new Pose(18.608, 119.523, Math.toRadians(-35));
+    private static final Pose startPose = new Pose(18.608, 119.523, Math.toRadians(-35));
     private static boolean automatedDrive;
     private static Supplier<PathChain> pathChain;
     private static TelemetryManager telemetryM;

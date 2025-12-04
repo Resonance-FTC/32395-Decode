@@ -22,7 +22,8 @@ public class Constants {
             .headingPIDFCoefficients(new PIDFCoefficients(0.9, 0.0, 0.002, 0.025))
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.013, 0.0, 0.00001, 0.6, 0.015))
             .centripetalScaling(0.003)
-            .mass(org.firstinspires.ftc.teamcode.util.Constants.robotConstants.mass);
+            .mass(org.firstinspires.ftc.teamcode.util.Constants.robotConstants.mass)
+            .automaticHoldEnd(true);
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
             .xVelocity(77.04257033941315)
