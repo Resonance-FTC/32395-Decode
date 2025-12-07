@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.util;
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 
+import dev.nextftc.control.feedback.PIDCoefficients;
+
 
 public class Constants {
     public static class DriveConstants{
@@ -26,7 +28,22 @@ public class Constants {
         public static double turretI = 0;
         public static double turretD = 0;
     }
+    public static class intakeConstatnts {
+        public static String intakeMotorID = "intakeMotor";
+    }
 
+    public static class spindexerConstants {
+        public static String spindexerServo = "spindexerServo";
+        public static String spindexerAnalog = "spindexerAnalog";
+        public static PIDCoefficients coefficients = new PIDCoefficients(1,0,0);
+        public static int firstSlotPos = 0;
+        public static int secondSlotPos = 120;
+        public static int thirdSlotPos = 240;
+        public static double greenColorThreshold = 0.5;
+        public static double redColorThreshold = 0.5;
+        public static double blueColorThreshold = 0.5;
+
+    }
     public enum AllianceColors {
         BLUE,
         RED
