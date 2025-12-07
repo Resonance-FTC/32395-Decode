@@ -19,8 +19,8 @@ class Spindexer(hardwareMap: HardwareMap) {
         Constants.spindexerConstants.coefficients)
 
     private val colorSensor: NormalizedColorSensor = hardwareMap.get(NormalizedColorSensor::class.java, "colorSensor")
-
-
+    val ballList: MutableList<Constants.BallColors> = mutableListOf(Constants.BallColors.NONE,Constants.BallColors.NONE,Constants.BallColors.NONE)
+    var currentSlot: Slot = Slot.FIRST
     enum class Slot {
         FIRST,
         SECOND,
@@ -31,6 +31,7 @@ class Spindexer(hardwareMap: HardwareMap) {
         SECONDSLOT,
         THIRDSLOT
     }
+
 
     val spin = Actors.Actor<Slot, Actions>(
         initializer = { Slot.FIRST },
@@ -57,14 +58,32 @@ class Spindexer(hardwareMap: HardwareMap) {
                 if (color.green > Constants.spindexerConstants.greenColorThreshold) {
                     when(state) {
                         Slot.FIRST -> {
-
+                            ballList[0] = Constants.BallColors.GREEN
                         }
 
                         Slot.SECOND -> {
+                            ballList[1] = Constants.BallColors.GREEN
 
                         }
 
                         Slot.THIRD -> {
+                            ballList[2] = Constants.BallColors.GREEN
+
+                        }
+                    }
+                } else if (color.red > Constants.spindexerConstants.redColorThreshold && color.blue > Constants.spindexerConstants.blueColorThreshold) {
+                    when(state) {
+                        Slot.FIRST -> {
+                            ballList[0] = Constants.BallColors.PURPLE
+                        }
+
+                        Slot.SECOND -> {
+                            ballList[1] = Constants.BallColors.PURPLE
+
+                        }
+
+                        Slot.THIRD -> {
+                            ballList[2] = Constants.BallColors.PURPLE
 
                         }
                     }
@@ -86,4 +105,21 @@ class Spindexer(hardwareMap: HardwareMap) {
         },
         name = "intake"
     )
+    fun removeCurrentBall() {
+        when (currentSlot) {
+            Slot.FIRST -> {
+                ballList[0] = Constants.BallColors.NONE
+            }
+
+            Slot.SECOND -> {
+                ballList[1] = Constants.BallColors.NONE
+
+            }
+
+            Slot.THIRD -> {
+                ballList[2] = Constants.BallColors.NONE
+
+            }
+        }
+    }
 }

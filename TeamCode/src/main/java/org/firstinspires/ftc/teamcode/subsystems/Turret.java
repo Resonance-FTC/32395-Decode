@@ -46,6 +46,7 @@ public class Turret {
 
         this.ticksPerDegree = Constants.shooterConstants.shooterTicksPerRevolution / 360.0;
         this.ticksPerRevolution = Math.round(Constants.shooterConstants.shooterTicksPerRevolution);
+        turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         targetLockClosure = Continuations.exec(() -> {
             // get robot pose

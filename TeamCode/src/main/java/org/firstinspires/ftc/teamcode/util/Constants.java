@@ -65,4 +65,10 @@ public class Constants {
         BOTTOMTWOONLY,
         TOPTWOONLY
     }
+
+    public enum BallColors {
+        GREEN,
+        PURPLE,
+        NONE
+    }
 }
