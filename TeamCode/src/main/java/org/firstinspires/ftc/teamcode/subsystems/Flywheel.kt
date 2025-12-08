@@ -13,15 +13,18 @@ import org.firstinspires.ftc.teamcode.util.Constants
 class Flywheel(hardwareMap: HardwareMap) {
     private val shooterMotor: CachingDcMotorEx = hardwareMap.get(CachingDcMotorEx::class.java, Constants.shooterConstants.shooterMotorID)
 
-    val pidController: ControlSystem = ControlSystem.builder().posPid(1.0,0.0,0.0).basicFF(1.0,0.0,0.0).build()
+    val pidController: ControlSystem = ControlSystem.builder().velPid(1.0,0.0,0.0).basicFF(1.0,0.0,0.0).build()
+
     fun init() {
         shooterMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
     }
+
     enum class State {
         SHOOTING,
         IDLEING,
         STOPPED
     }
+
     enum class Actions {
         SHOOT,
         IDLE,
@@ -54,6 +57,7 @@ class Flywheel(hardwareMap: HardwareMap) {
                     }
 
                     State.IDLEING -> {
+                        pidController.goal = KineticState(2500.0)
                         shooterMotor.power = updateShooterPower()
                     }
 
@@ -67,5 +71,9 @@ class Flywheel(hardwareMap: HardwareMap) {
     )
     fun updateShooterPower(): Double {
         return pidController.calculate(KineticState(shooterMotor.getVelocity(AngleUnit.DEGREES)))
+    }
+
+    fun setTargetVel(target:Double) {
+        pidController.goal = KineticState(target)
     }
 }
