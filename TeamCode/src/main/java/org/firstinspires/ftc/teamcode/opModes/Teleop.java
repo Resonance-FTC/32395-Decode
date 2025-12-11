@@ -10,6 +10,9 @@ import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Spindexer;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.util.Constants;
 
@@ -24,7 +27,11 @@ public class Teleop {
 
         Drivetrain drivetrain = new Drivetrain(ctx.hardwareMap(), ctx.gamepad1(), startPose);
         Follower follower = drivetrain.follower;
+
         Turret turret = new Turret(ctx.hardwareMap(), Constants.AllianceColors.BLUE, follower);
+        Spindexer spindexer = new Spindexer(ctx.hardwareMap());
+        Flywheel flywheel = new Flywheel(ctx.hardwareMap(), spindexer);
+        Intake intake = new Intake(ctx.hardwareMap());
 
         PathChain pathChain = follower.pathBuilder() //Lazy Curve Generation
                 .addPath(new Path(new BezierLine(follower::getPose, new Pose(30, 0))))
@@ -58,6 +65,9 @@ public class Teleop {
         ctx.bindSpawn(ctx.risingEdge( ()-> !ctx.gamepad1().right_bumper),
                 exec(()->drivetrain.setSpeed(1))
         );
+
+
+
 
         ctx.dropToScheduler();
     });

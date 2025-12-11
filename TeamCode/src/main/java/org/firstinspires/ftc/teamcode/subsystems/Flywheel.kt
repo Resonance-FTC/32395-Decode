@@ -10,7 +10,7 @@ import dev.nextftc.control.KineticState
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.teamcode.util.Constants
 
-class Flywheel(hardwareMap: HardwareMap) {
+class Flywheel(hardwareMap: HardwareMap, spindexer: Spindexer) {
     private val shooterMotor: CachingDcMotorEx = hardwareMap.get(CachingDcMotorEx::class.java, Constants.shooterConstants.shooterMotorID)
 
     val pidController: ControlSystem = ControlSystem.builder().velPid(1.0,0.0,0.0).basicFF(1.0,0.0,0.0).build()
@@ -53,15 +53,18 @@ class Flywheel(hardwareMap: HardwareMap) {
             Continuations.exec {
                 when (state) {
                     State.SHOOTING -> {
+                        spindexer.setShooting(true)
                         shooterMotor.power = updateShooterPower()
                     }
 
                     State.IDLEING -> {
+                        spindexer.setShooting(false)
                         pidController.goal = KineticState(2500.0)
                         shooterMotor.power = updateShooterPower()
                     }
 
                     State.STOPPED -> {
+                        spindexer.setShooting(false)
                         shooterMotor.power = 0.0
                     }
                 }

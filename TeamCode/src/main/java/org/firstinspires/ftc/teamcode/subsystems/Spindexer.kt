@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.ColorSensor
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor
 import com.qualcomm.robotcore.hardware.NormalizedRGBA
-import dev.frozenmilk.dairy.cachinghardware.CachingDcMotorEx
 import dev.frozenmilk.dairy.mercurial.continuations.Actors
 import dev.frozenmilk.dairy.mercurial.continuations.Continuations
 import org.firstinspires.ftc.teamcode.util.AnalogCrServo
@@ -21,6 +20,7 @@ class Spindexer(hardwareMap: HardwareMap) {
     private val colorSensor: NormalizedColorSensor = hardwareMap.get(NormalizedColorSensor::class.java, "colorSensor")
     val ballList: MutableList<Constants.BallColors> = mutableListOf(Constants.BallColors.NONE,Constants.BallColors.NONE,Constants.BallColors.NONE)
     var currentSlot: Slot = Slot.FIRST
+    var shooting: Boolean = false
     enum class Slot {
         FIRST,
         SECOND,
@@ -51,7 +51,12 @@ class Spindexer(hardwareMap: HardwareMap) {
             }
         },
         automata = { stateRegister ->
-            val state by stateRegister
+            var state by stateRegister
+            if (!shooting) {
+                val empty = getEmptySlot()
+                if (empty != null) state = empty
+
+            }
             Continuations.exec {
                 spindexerServo.updateServo()
                 val color:NormalizedRGBA = colorSensor.normalizedColors
@@ -122,4 +127,52 @@ class Spindexer(hardwareMap: HardwareMap) {
             }
         }
     }
+    fun getEmptySlot(): Slot? {
+        return when (Constants.BallColors.NONE) {
+            ballList[0] -> Slot.FIRST
+            ballList[1] -> Slot.SECOND
+            ballList[2] -> Slot.THIRD
+            else -> null
+        }
+    }
+
+    fun getGreen(): Slot? {
+        return when (Constants.BallColors.GREEN) {
+            ballList[0] -> Slot.FIRST
+            ballList[1] -> Slot.SECOND
+            ballList[2] -> Slot.THIRD
+            else -> null
+        }
+    }
+    fun getPurple(): Slot? {
+        return when (Constants.BallColors.PURPLE) {
+            ballList[0] -> Slot.FIRST
+            ballList[1] -> Slot.SECOND
+            ballList[2] -> Slot.THIRD
+            else -> null
+        }
+    }
+
+    fun getGreenAction() : Actions? {
+        return when (getGreen()) {
+            Slot.FIRST -> Actions.FIRSTSLOT
+            Slot.SECOND -> Actions.SECONDSLOT
+            Slot.THIRD -> Actions.THIRDSLOT
+            else -> null
+        }
+    }
+
+    fun getPurpleAction() : Actions? {
+        return when (getPurple()) {
+            Slot.FIRST -> Actions.FIRSTSLOT
+            Slot.SECOND -> Actions.SECONDSLOT
+            Slot.THIRD -> Actions.THIRDSLOT
+            else -> null
+        }
+    }
+
+    fun setShooting(isShooting: Boolean) {
+        shooting = isShooting
+    }
+
 }

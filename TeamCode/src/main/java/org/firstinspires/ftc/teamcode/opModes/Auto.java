@@ -9,12 +9,14 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.util.Constants;
 
 
 import dev.frozenmilk.dairy.mercurial.continuations.Closure;
 import dev.frozenmilk.dairy.mercurial.ftc.Mercurial;
+import dev.frozenmilk.dairy.mercurial.ftc.State;
 
 @SuppressWarnings("unused")
 public class Auto {
@@ -37,9 +39,11 @@ public class Auto {
     private static final Pose goToPickupPPG = new Pose(44, 35.5);
     private static final Pose intakePPGPose = new Pose(44, 83.5);
 
+
     //Subsystems
     public static Drivetrain drivetrain;
     public static Turret turret;
+    public static Intake intake;
     //Auto Options
     public static Constants.AutoOptions autoChoice = null;
     public static Closure bottomFull, topFull, parkOnly, bottomTwoOnly, topTwoOnly;
@@ -50,12 +54,17 @@ public class Auto {
 
         parallel(
                 loop(
+                        sequence(
                         turret.targetLockClosure
+                                //exec(() -> spindexer.rotationlogic())
+                        )
                 ),
                 sequence(
                         drivetrain.followPath(ScorePreload),
                         drivetrain.followPath(pickupGPP),
+                        exec(() -> intake.getSpin().getTx().send(Intake.Actions.FORWARD)),
                         drivetrain.followPath(intakeGPP),
+                        exec(() -> intake.getSpin().getTx().send(Intake.Actions.RELEASE)),
                         drivetrain.followPath(scoreGPP)
 
                 )
@@ -109,8 +118,7 @@ public class Auto {
         drivetrain = new Drivetrain(ctx.hardwareMap(), ctx.gamepad1(), startPose);
         follower = drivetrain.follower;
         turret = new Turret(ctx.hardwareMap(), Constants.AllianceColors.BLUE, follower);
-
-
+        intake = new Intake(ctx.hardwareMap());
         ctx.schedule(
                 sequence(
 
