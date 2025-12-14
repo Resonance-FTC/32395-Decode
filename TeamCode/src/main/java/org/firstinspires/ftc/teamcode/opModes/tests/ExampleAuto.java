@@ -8,22 +8,25 @@ import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import  com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.util.Constants;
+
+import dev.frozenmilk.dairy.cachinghardware.CachingDcMotorEx;
 
 @Autonomous(name = "Example Auto", group = "Examples")
 public class ExampleAuto extends OpMode {
 
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
-
+    public CachingDcMotorEx intakeMotor;
     private int pathState;
     private PathChain Path1, Path3, Path4,Path5;
     private final Pose startPose = new Pose(18.608, 119.523, Math.toRadians(-35));
 
     private final Pose scorePose = new Pose(50, 100);
 
-    private final Pose pickup1Pose = new Pose(31, 100);
+    private final Pose pickup1Pose = new Pose(29, 100);
     public void buildPaths() {
         Path1 = follower
                 .pathBuilder()
@@ -38,6 +41,7 @@ public class ExampleAuto extends OpMode {
                 .addPath(
                         new BezierLine(scorePose, pickup1Pose)
                 )
+                .setVelocityConstraint(.025)
                 .setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
         Path4 = follower
@@ -45,12 +49,13 @@ public class ExampleAuto extends OpMode {
                 .addPath(
                         new BezierLine(pickup1Pose, scorePose)
                 )
+                .setVelocityConstraint(.025)
                 .setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
         Path5 = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(scorePose, new Pose(43, 75))
+                        new BezierLine(scorePose, new Pose(44, 75))
                 )
                 .setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
@@ -73,8 +78,8 @@ public class ExampleAuto extends OpMode {
 
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
                 if(!follower.isBusy()) {
+                    intakeMotor.setPower(-1);
                     /* Score Preload */
-
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
                     follower.followPath(Path3,true);
                     setPathState(2);
@@ -132,8 +137,9 @@ public class ExampleAuto extends OpMode {
         opmodeTimer = new Timer();
         opmodeTimer.resetTimer();
 
+        intakeMotor = new CachingDcMotorEx(hardwareMap.get(DcMotorEx.class, org.firstinspires.ftc.teamcode.util.Constants.intakeConstatnts.intakeMotorID));
 
-        follower = Constants.createFollower(hardwareMap);
+        follower = org.firstinspires.ftc.teamcode.pedroPathing.Constants.createFollower(hardwareMap);
         buildPaths();
         follower.setStartingPose(startPose);
 

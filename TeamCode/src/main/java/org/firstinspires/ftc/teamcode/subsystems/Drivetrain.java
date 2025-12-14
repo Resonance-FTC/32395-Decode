@@ -51,15 +51,15 @@ public class Drivetrain {
     }
 
 
-    public Command drive() {
-        return command()
-                .setExecute(() -> {
+    public void drive() {
+
+                    follower.update();
                     follower.setTeleOpDrive(
                             -gamepad.left_stick_y * speed,
                             -gamepad.left_stick_x * speed,
                             -gamepad.right_stick_x * speed,
                             true);
-                }).setFinished(() -> gamepad.aWasPressed());
+
     }
 
     public void setSpeed(double speed){
@@ -73,4 +73,5 @@ public class Drivetrain {
     public Follower getFollower() {
         return follower;
     }
+
 }

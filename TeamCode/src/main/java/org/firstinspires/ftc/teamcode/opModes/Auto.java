@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.util.Constants;
 
 
 import dev.frozenmilk.dairy.mercurial.continuations.Closure;
+import dev.frozenmilk.dairy.mercurial.ftc.Context;
 import dev.frozenmilk.dairy.mercurial.ftc.Mercurial;
 import dev.frozenmilk.dairy.mercurial.ftc.State;
 
@@ -45,7 +46,7 @@ public class Auto {
     public static Turret turret;
     public static Intake intake;
     //Auto Options
-    public static Constants.AutoOptions autoChoice = null;
+    public static Constants.AutoOptions autoChoice = Constants.AutoOptions.TOPFULL;
     public static Closure bottomFull, topFull, parkOnly, bottomTwoOnly, topTwoOnly;
     public static void buildAutoOptions() {
         bottomFull =
@@ -115,15 +116,11 @@ public class Auto {
     //Auto Program
     public static final Mercurial.RegisterableProgram Auto = Mercurial.autonomous(ctx -> {
 
-        drivetrain = new Drivetrain(ctx.hardwareMap(), ctx.gamepad1(), startPose);
-        follower = drivetrain.follower;
-        turret = new Turret(ctx.hardwareMap(), Constants.AllianceColors.BLUE, follower);
-        intake = new Intake(ctx.hardwareMap());
         ctx.schedule(
                 sequence(
 
                         waitUntil(ctx::inLoop),
-
+                            exec(() -> initialize(ctx)),
                         sequence(
                                 ifHuh(() -> autoChoice == Constants.AutoOptions.BOTTOMFULL, topFull),
                                 ifHuh(()-> autoChoice == Constants.AutoOptions.TOPFULL, topFull),
@@ -138,6 +135,14 @@ public class Auto {
         );
 
     });
+
+    public static void initialize(Context ctx){
+
+        drivetrain = new Drivetrain(ctx.hardwareMap(), ctx.gamepad1(), startPose);
+        follower = drivetrain.follower;
+        turret = new Turret(ctx.hardwareMap(), Constants.AllianceColors.BLUE, follower);
+        intake = new Intake(ctx.hardwareMap());
+    }
 
     //Path Building
     public static void buildTopTwoOnly() {
