@@ -12,6 +12,7 @@ import dev.frozenmilk.dairy.mercurial.continuations.Continuations.parallel
 import dev.frozenmilk.dairy.mercurial.continuations.Continuations.sequence
 import dev.frozenmilk.dairy.mercurial.continuations.Continuations.waitUntil
 import dev.frozenmilk.dairy.mercurial.ftc.Context
+import dev.frozenmilk.dairy.mercurial.ftc.Mercurial
 import dev.frozenmilk.dairy.mercurial.ftc.Mercurial.Program
 import dev.frozenmilk.dairy.mercurial.ftc.Mercurial.RegisterableProgram
 import dev.frozenmilk.dairy.mercurial.ftc.Mercurial.teleop
@@ -27,11 +28,11 @@ import java.util.function.BooleanSupplier
 class TestingIntake {
     private val startPose = Pose(18.608, 119.523, Math.toRadians(-35.0))
 
-    val myFirstMercurialTeleOp: RegisterableProgram = teleop { ctx: Context? ->
-        val drivetrain = Drivetrain(ctx!!.hardwareMap, ctx.gamepad1, startPose)
+    val myFirstMercurialTeleOp: RegisterableProgram = Mercurial.teleop {
+        val drivetrain = Drivetrain(this.hardwareMap, this.gamepad1, startPose)
         val follower = drivetrain.follower
 
-        val intake = Intake(ctx.hardwareMap)
+        val intake = Intake(this.hardwareMap)
 
         val pathChain = follower.pathBuilder() //Lazy Curve Generation
             .addPath(Path(BezierLine({ follower.pose }, Pose(30.0, 0.0))))
@@ -44,49 +45,49 @@ class TestingIntake {
             )
             .build()
 
-        ctx.schedule(
+        this.schedule(
             sequence(
-                waitUntil(ctx::inLoop),
+                waitUntil(this::inLoop),
                 exec { follower.startTeleopDrive() }
 
             )
         )
 
-        ctx.bindExec(
-            { ctx.gamepad1.aWasPressed() },
+        this.bindExec(
+            { this.gamepad1.aWasPressed() },
             sequence(
                 drivetrain.followPath(pathChain),
                 drivetrain.drive()
             )
         )
 
-        ctx.bindSpawn(
-            ctx.risingEdge { ctx.gamepad1.right_bumper },
+        this.bindSpawn(
+            this.risingEdge { this.gamepad1.right_bumper },
             exec{ drivetrain.setSpeed(.2) }
         )
 
-        ctx.bindSpawn(
-            ctx.risingEdge({ !ctx.gamepad1.right_bumper }),
+        this.bindSpawn(
+            this.risingEdge({ !this.gamepad1.right_bumper }),
             exec { drivetrain.setSpeed(1.0) }
         )
 
 
-        ctx.bindSpawn(
-            ctx.risingEdge({ ctx.gamepad2.a }),
+        this.bindSpawn(
+            this.risingEdge({ this.gamepad2.a }),
             exec { intake.spin.tx.send(Intake.Actions.FORWARD) }
         )
 
-        ctx.bindSpawn(
-            ctx.risingEdge({ !ctx.gamepad2.a }),
+        this.bindSpawn(
+            this.risingEdge({ !this.gamepad2.a }),
             exec { intake.spin.tx.send(Intake.Actions.RELEASE) }
         )
-        ctx.bindSpawn(
-            ctx.risingEdge({ ctx.gamepad2.b }),
+        this.bindSpawn(
+            this.risingEdge({ this.gamepad2.b }),
             exec { intake.spin.tx.send(Intake.Actions.BACK) }
         )
 
 
 
-        ctx.dropToScheduler()
+        this.dropToScheduler()
     }
 }

@@ -62,9 +62,9 @@ public class Auto {
                 sequence(
                         drivetrain.followPath(ScorePreload),
                         drivetrain.followPath(pickupGPP),
-                        exec(() -> intake.getSpin().getTx().send(Intake.Actions.FORWARD)),
+                        exec(() -> intake.getSpin().tx().send(Intake.Actions.FORWARD)),
                         drivetrain.followPath(intakeGPP),
-                        exec(() -> intake.getSpin().getTx().send(Intake.Actions.RELEASE)),
+                        exec(() -> intake.getSpin().tx().send(Intake.Actions.RELEASE)),
                         drivetrain.followPath(scoreGPP)
 
                 )

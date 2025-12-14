@@ -70,7 +70,6 @@ class Flywheel(hardwareMap: HardwareMap, spindexer: Spindexer) {
                 }
             }
         },
-        name = "shooting"
     )
     fun updateShooterPower(): Double {
         return pidController.calculate(KineticState(shooterMotor.getVelocity(AngleUnit.DEGREES)))

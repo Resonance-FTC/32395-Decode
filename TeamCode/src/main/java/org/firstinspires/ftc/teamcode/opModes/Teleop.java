@@ -23,7 +23,7 @@ import dev.frozenmilk.dairy.mercurial.ftc.Mercurial;
 public class Teleop {
     private static final Pose startPose = new Pose(18.608, 119.523, Math.toRadians(-35));
     
-    public static final Mercurial.RegisterableProgram myFirstMercurialTeleOp = Mercurial.teleop(ctx -> {
+    public static final Mercurial.RegisterableProgram myFirstMercurialTeleOp = Mercurial.teleop (ctx -> {
 
         Drivetrain drivetrain = new Drivetrain(ctx.hardwareMap(), ctx.gamepad1(), startPose);
         Follower follower = drivetrain.follower;

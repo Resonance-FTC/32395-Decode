@@ -80,7 +80,6 @@ class Spindexer(hardwareMap: HardwareMap) {
                 }
             }
         },
-        name = "intake"
     )
 
     fun removeCurrentBall() {

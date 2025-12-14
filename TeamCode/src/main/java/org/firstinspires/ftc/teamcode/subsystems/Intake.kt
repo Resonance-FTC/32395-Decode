@@ -55,7 +55,6 @@ class Intake(hardwareMap: HardwareMap) {
                 }
             }
         },
-        name = "intake"
     )
 
 }
