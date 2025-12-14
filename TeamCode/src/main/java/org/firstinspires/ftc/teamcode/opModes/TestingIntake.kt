@@ -28,7 +28,7 @@ import java.util.function.BooleanSupplier
 class TestingIntake {
     private val startPose = Pose(18.608, 119.523, Math.toRadians(-35.0))
 
-    val myFirstMercurialTeleOp: RegisterableProgram = Mercurial.teleop {
+    val intakeTesting: RegisterableProgram = Mercurial.teleop {
         val drivetrain = Drivetrain(this.hardwareMap, this.gamepad1, startPose)
         val follower = drivetrain.follower
 
