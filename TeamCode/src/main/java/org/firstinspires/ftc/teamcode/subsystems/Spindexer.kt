@@ -1,5 +1,5 @@
+// kotlin
 package org.firstinspires.ftc.teamcode.subsystems
-
 
 import com.qualcomm.hardware.rev.RevColorSensorV3
 import com.qualcomm.robotcore.hardware.ColorSensor
@@ -18,20 +18,21 @@ class Spindexer(hardwareMap: HardwareMap) {
         Constants.spindexerConstants.coefficients)
 
     private val colorSensor: NormalizedColorSensor = hardwareMap.get(NormalizedColorSensor::class.java, "colorSensor")
-    val ballList: MutableList<Constants.BallColors> = mutableListOf(Constants.BallColors.NONE,Constants.BallColors.NONE,Constants.BallColors.NONE)
+    val ballList: MutableList<Constants.BallColors> = mutableListOf(Constants.BallColors.NONE, Constants.BallColors.NONE, Constants.BallColors.NONE)
     var currentSlot: Slot = Slot.FIRST
-    var shooting: Boolean = false
+    private var shooting: Boolean = false
+
     enum class Slot {
         FIRST,
         SECOND,
         THIRD
     }
+
     enum class Actions {
         FIRSTSLOT,
         SECONDSLOT,
         THIRDSLOT
     }
-
 
     val spin = Actors.Actor<Slot, Actions>(
         initializer = { Slot.FIRST },
@@ -55,78 +56,41 @@ class Spindexer(hardwareMap: HardwareMap) {
             if (!shooting) {
                 val empty = getEmptySlot()
                 if (empty != null) state = empty
-
             }
             Continuations.exec {
                 spindexerServo.updateServo()
-                val color:NormalizedRGBA = colorSensor.normalizedColors
+                val color: NormalizedRGBA = colorSensor.normalizedColors
                 if (color.green > Constants.spindexerConstants.greenColorThreshold) {
-                    when(state) {
-                        Slot.FIRST -> {
-                            ballList[0] = Constants.BallColors.GREEN
-                        }
-
-                        Slot.SECOND -> {
-                            ballList[1] = Constants.BallColors.GREEN
-
-                        }
-
-                        Slot.THIRD -> {
-                            ballList[2] = Constants.BallColors.GREEN
-
-                        }
+                    when (state) {
+                        Slot.FIRST -> { ballList[0] = Constants.BallColors.GREEN }
+                        Slot.SECOND -> { ballList[1] = Constants.BallColors.GREEN }
+                        Slot.THIRD -> { ballList[2] = Constants.BallColors.GREEN }
                     }
                 } else if (color.red > Constants.spindexerConstants.redColorThreshold && color.blue > Constants.spindexerConstants.blueColorThreshold) {
-                    when(state) {
-                        Slot.FIRST -> {
-                            ballList[0] = Constants.BallColors.PURPLE
-                        }
-
-                        Slot.SECOND -> {
-                            ballList[1] = Constants.BallColors.PURPLE
-
-                        }
-
-                        Slot.THIRD -> {
-                            ballList[2] = Constants.BallColors.PURPLE
-
-                        }
+                    when (state) {
+                        Slot.FIRST -> { ballList[0] = Constants.BallColors.PURPLE }
+                        Slot.SECOND -> { ballList[1] = Constants.BallColors.PURPLE }
+                        Slot.THIRD -> { ballList[2] = Constants.BallColors.PURPLE }
                     }
                 }
                 when (state) {
-                    Slot.FIRST -> {
-                        spindexerServo.setPosition(Constants.spindexerConstants.firstSlotPos)
-                    }
-
-                    Slot.SECOND -> {
-                        spindexerServo.setPosition(Constants.spindexerConstants.secondSlotPos)
-                    }
-
-                    Slot.THIRD -> {
-                        spindexerServo.setPosition(Constants.spindexerConstants.thirdSlotPos)
-                    }
+                    Slot.FIRST -> { spindexerServo.setPosition(Constants.spindexerConstants.firstSlotPos) }
+                    Slot.SECOND -> { spindexerServo.setPosition(Constants.spindexerConstants.secondSlotPos) }
+                    Slot.THIRD -> { spindexerServo.setPosition(Constants.spindexerConstants.thirdSlotPos) }
                 }
             }
         },
         name = "intake"
     )
+
     fun removeCurrentBall() {
         when (currentSlot) {
-            Slot.FIRST -> {
-                ballList[0] = Constants.BallColors.NONE
-            }
-
-            Slot.SECOND -> {
-                ballList[1] = Constants.BallColors.NONE
-
-            }
-
-            Slot.THIRD -> {
-                ballList[2] = Constants.BallColors.NONE
-
-            }
+            Slot.FIRST -> { ballList[0] = Constants.BallColors.NONE }
+            Slot.SECOND -> { ballList[1] = Constants.BallColors.NONE }
+            Slot.THIRD -> { ballList[2] = Constants.BallColors.NONE }
         }
     }
+
     fun getEmptySlot(): Slot? {
         return when (Constants.BallColors.NONE) {
             ballList[0] -> Slot.FIRST
@@ -144,6 +108,7 @@ class Spindexer(hardwareMap: HardwareMap) {
             else -> null
         }
     }
+
     fun getPurple(): Slot? {
         return when (Constants.BallColors.PURPLE) {
             ballList[0] -> Slot.FIRST
@@ -153,7 +118,7 @@ class Spindexer(hardwareMap: HardwareMap) {
         }
     }
 
-    fun getGreenAction() : Actions? {
+    fun getGreenAction(): Actions? {
         return when (getGreen()) {
             Slot.FIRST -> Actions.FIRSTSLOT
             Slot.SECOND -> Actions.SECONDSLOT
@@ -162,7 +127,7 @@ class Spindexer(hardwareMap: HardwareMap) {
         }
     }
 
-    fun getPurpleAction() : Actions? {
+    fun getPurpleAction(): Actions? {
         return when (getPurple()) {
             Slot.FIRST -> Actions.FIRSTSLOT
             Slot.SECOND -> Actions.SECONDSLOT
@@ -174,5 +139,4 @@ class Spindexer(hardwareMap: HardwareMap) {
     fun setShooting(isShooting: Boolean) {
         shooting = isShooting
     }
-
 }
