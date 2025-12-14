@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
 import com.qualcomm.robotcore.hardware.DcMotor
+import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
 import dev.frozenmilk.dairy.cachinghardware.CachingDcMotorEx
 import dev.frozenmilk.dairy.mercurial.continuations.Actors
@@ -11,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.teamcode.util.Constants
 
 class Flywheel(hardwareMap: HardwareMap, spindexer: Spindexer) {
-    private val shooterMotor: CachingDcMotorEx = hardwareMap.get(CachingDcMotorEx::class.java, Constants.shooterConstants.shooterMotorID)
+    private val shooterMotor: CachingDcMotorEx = CachingDcMotorEx(hardwareMap.get(DcMotorEx::class.java, Constants.shooterConstants.shooterMotorID))
 
     val pidController: ControlSystem = ControlSystem.builder().velPid(1.0,0.0,0.0).basicFF(1.0,0.0,0.0).build()
 

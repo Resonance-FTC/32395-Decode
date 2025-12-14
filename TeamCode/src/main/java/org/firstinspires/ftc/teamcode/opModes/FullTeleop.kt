@@ -25,10 +25,10 @@ import org.firstinspires.ftc.teamcode.util.Constants
 import java.util.function.BooleanSupplier
 
 @Suppress("unused")
-class FullTeleop {
+object FullTeleop {
     private val startPose = Pose(18.608, 119.523, Math.toRadians(-35.0))
 
-    val fullTeleopTest: RegisterableProgram = Mercurial.teleop {
+    var fullTeleopTest: RegisterableProgram = Mercurial.teleop {
         val drivetrain = Drivetrain(this.hardwareMap, this.gamepad1, startPose)
         val follower = drivetrain.follower
 

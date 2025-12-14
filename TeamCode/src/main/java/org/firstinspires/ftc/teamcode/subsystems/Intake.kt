@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
+import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
 import dev.frozenmilk.dairy.cachinghardware.CachingDcMotorEx
 import dev.frozenmilk.dairy.mercurial.continuations.Actors
@@ -7,7 +8,7 @@ import dev.frozenmilk.dairy.mercurial.continuations.Continuations
 import org.firstinspires.ftc.teamcode.util.Constants
 
 class Intake(hardwareMap: HardwareMap) {
-    private val intakeMotor: CachingDcMotorEx = hardwareMap.get(CachingDcMotorEx::class.java, Constants.intakeConstatnts.intakeMotorID)
+    private val intakeMotor: CachingDcMotorEx = CachingDcMotorEx(hardwareMap.get(DcMotorEx::class.java, Constants.intakeConstatnts.intakeMotorID))
 
     enum class State {
         INTAKING,
