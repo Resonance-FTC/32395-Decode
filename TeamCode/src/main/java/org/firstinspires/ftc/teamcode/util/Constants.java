@@ -36,22 +36,25 @@ public class Constants {
         public static String spindexerServo = "spindexerServo";
         public static String spindexerAnalog = "spindexerAnalog";
         public static PIDCoefficients coefficients = new PIDCoefficients(1,0,0);
-        public static int firstSlotPos = 0;
-        public static int secondSlotPos = 120;
-        public static int thirdSlotPos = 240;
+        public static double firstSlotPos = 0;
+        public static double secondSlotPos = 0.38;
+        public static double thirdSlotPos = 0.76;
         public static double greenColorThreshold = 0.5;
         public static double redColorThreshold = 0.5;
         public static double blueColorThreshold = 0.5;
 
+    }
+    public static class transferConstants {
+        public static String transferServoID = "transferServo";
     }
     public enum AllianceColors {
         BLUE,
         RED
     }
     public static class fieldConstants {
-        public static int BLUEAPRILTAGID = 21;
+        public static int BLUEAPRILTAGID = 20;
 
-        public static int REDAPRILTAGID = 22;
+        public static int REDAPRILTAGID = 24;
     }
 
     public static class robotConstants {

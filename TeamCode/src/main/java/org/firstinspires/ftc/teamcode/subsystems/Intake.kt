@@ -8,7 +8,15 @@ import dev.frozenmilk.dairy.mercurial.continuations.Continuations
 import org.firstinspires.ftc.teamcode.util.Constants
 
 class Intake(hardwareMap: HardwareMap) {
-    private val intakeMotor: CachingDcMotorEx = CachingDcMotorEx(hardwareMap.get(DcMotorEx::class.java, Constants.intakeConstatnts.intakeMotorID))
+    private val intakeMotor: CachingDcMotorEx = CachingDcMotorEx(
+        hardwareMap.get(
+            DcMotorEx::class.java,
+            Constants.intakeConstatnts.intakeMotorID
+        )
+    ).apply {
+        this.direction = com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE
+
+    }
 
     enum class State {
         INTAKING,

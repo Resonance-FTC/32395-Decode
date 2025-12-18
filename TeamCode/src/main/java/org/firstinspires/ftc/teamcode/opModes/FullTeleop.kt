@@ -65,19 +65,7 @@ object FullTeleop {
         this.bindExec(
             { this.gamepad1.aWasPressed() },
             sequence(
-                drivetrain.followPath(pathChain),
-                drivetrain.drive()
-            )
-        )
-
-        this.bindSpawn(
-            this.risingEdge { this.gamepad1.right_bumper },
-            exec{ drivetrain.setSpeed(.2) }
-        )
-
-        this.bindSpawn(
-            this.risingEdge({ !this.gamepad1.right_bumper }),
-            exec { drivetrain.setSpeed(1.0) }
+                drivetrain.followPath(pathChain))
         )
 
 

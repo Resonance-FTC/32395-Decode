@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
+import com.pedropathing.follower.Follower
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
@@ -10,9 +11,12 @@ import dev.nextftc.control.ControlSystem
 import dev.nextftc.control.KineticState
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.teamcode.util.Constants
+import kotlin.math.pow
+import kotlin.math.sqrt
 
-class Flywheel(hardwareMap: HardwareMap, spindexer: Spindexer) {
+class Flywheel(hardwareMap: HardwareMap, spindexer: Spindexer, follower: Follower, allianceColors: Constants.AllianceColors, ) {
     private val shooterMotor: CachingDcMotorEx = CachingDcMotorEx(hardwareMap.get(DcMotorEx::class.java, Constants.shooterConstants.shooterMotorID))
+    val goalX: Double = if (allianceColors == Constants.AllianceColors.BLUE) (72 - 58).toDouble() else (72 + 58).toDouble()
 
     val pidController: ControlSystem = ControlSystem.builder().velPid(1.0,0.0,0.0).basicFF(1.0,0.0,0.0).build()
 
@@ -55,6 +59,9 @@ class Flywheel(hardwareMap: HardwareMap, spindexer: Spindexer) {
                 when (state) {
                     State.SHOOTING -> {
                         spindexer.setShooting(true)
+                        val dist: Double = sqrt((goalX-follower.pose.x).pow(2) + (135-follower.pose.y).pow(2)) // Current distance from the goal
+                        val values: DoubleArray = Aimbot.getValues(dist)
+                        setTargetVel(values[1])
                         shooterMotor.power = updateShooterPower()
                     }
 
@@ -78,5 +85,9 @@ class Flywheel(hardwareMap: HardwareMap, spindexer: Spindexer) {
 
     fun setTargetVel(target:Double) {
         pidController.goal = KineticState(target)
+    }
+
+    fun calculateShooterPower(): Double {
+        return pidController.calculate(KineticState(shooterMotor.getVelocity(AngleUnit.DEGREES)))
     }
 }

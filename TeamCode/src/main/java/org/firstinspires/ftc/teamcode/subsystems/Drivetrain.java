@@ -30,7 +30,7 @@ public class Drivetrain {
 
         follower = org.firstinspires.ftc.teamcode.pedroPathing.Constants.createFollower(hardwareMap);
         follower.setStartingPose(startPose);
-        follower.update();
+        follower.startTeleopDrive();
     }
 
     public Command followPath(PathChain pathChainSupplier) {
