@@ -35,7 +35,7 @@ public class AnalogCrServo {
         currentMode = Mode.MOTOR;
         servo.setPower(power);
     }
-    public void setPosition(int Position) {
+    public void setPosition(double Position) {
         currentMode = Mode.SERVO;
         if (Position != target) {
             target = Position;

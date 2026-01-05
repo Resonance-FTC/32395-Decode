@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.util.Constants
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-class Flywheel(hardwareMap: HardwareMap, spindexer: Spindexer, follower: Follower, allianceColors: Constants.AllianceColors, ) {
+class Flywheel(hardwareMap: HardwareMap, spindexer: Spindexer, follower: Follower, allianceColors: Constants.AllianceColors, hood: Hood) {
     private val shooterMotor: CachingDcMotorEx = CachingDcMotorEx(hardwareMap.get(DcMotorEx::class.java, Constants.shooterConstants.shooterMotorID))
     val goalX: Double = if (allianceColors == Constants.AllianceColors.BLUE) (72 - 58).toDouble() else (72 + 58).toDouble()
 
@@ -62,6 +62,7 @@ class Flywheel(hardwareMap: HardwareMap, spindexer: Spindexer, follower: Followe
                         val dist: Double = sqrt((goalX-follower.pose.x).pow(2) + (135-follower.pose.y).pow(2)) // Current distance from the goal
                         val values: DoubleArray = Aimbot.getValues(dist)
                         setTargetVel(values[1])
+                        hood.targetingPosition = values[0]
                         shooterMotor.power = updateShooterPower()
                     }
 

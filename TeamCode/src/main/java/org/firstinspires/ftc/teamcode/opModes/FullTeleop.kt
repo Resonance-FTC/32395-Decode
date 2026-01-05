@@ -18,6 +18,7 @@ import dev.frozenmilk.dairy.mercurial.ftc.Mercurial.RegisterableProgram
 import dev.frozenmilk.dairy.mercurial.ftc.Mercurial.teleop
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel
+import org.firstinspires.ftc.teamcode.subsystems.Hood
 import org.firstinspires.ftc.teamcode.subsystems.Intake
 import org.firstinspires.ftc.teamcode.subsystems.Spindexer
 import org.firstinspires.ftc.teamcode.subsystems.Turret
@@ -32,9 +33,10 @@ object FullTeleop {
         val drivetrain = Drivetrain(this.hardwareMap, this.gamepad1, startPose)
         val follower = drivetrain.follower
 
-        val turret = Turret(this.hardwareMap, Constants.AllianceColors.BLUE, follower)
+        val turret = Turret(this.hardwareMap, Constants.AllianceColors.BLUE, follower, this)
         val spindexer = Spindexer(this.hardwareMap)
-        val flywheel = Flywheel(this.hardwareMap, spindexer)
+        val hood: Hood = Hood(this.hardwareMap, spindexer, follower, Constants.AllianceColors.BLUE)
+        val flywheel = Flywheel(this.hardwareMap, spindexer, follower, Constants.AllianceColors.BLUE, hood)
         val intake = Intake(this.hardwareMap)
 
         val pathChain = follower.pathBuilder() //Lazy Curve Generation

@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.util.Constants;
 
 import java.util.function.Supplier;
 
+import dev.frozenmilk.dairy.mercurial.ftc.Context;
 import dev.frozenmilk.dairy.mercurial.ftc.Mercurial;
 
 @SuppressWarnings("unused")
@@ -46,7 +47,7 @@ public class OpModeTemplate {
                 .build();
         // make sure we have some new state
         State state = new State();
-        Turret turret = new Turret(ctx.hardwareMap(), Constants.AllianceColors.BLUE, follower);
+        Turret turret = new Turret(ctx.hardwareMap(), Constants.AllianceColors.BLUE, follower,ctx);
         //Flywheel flywheel = new Flywheel(ctx.hardwareMap());
         // POV drive
         ctx.schedule(
@@ -62,7 +63,7 @@ public class OpModeTemplate {
                                         sequence(
                                             turret.targetLockClosure,
                                             exec(() -> {
-                                                looping(ctx.gamepad1(), turret);
+                                                looping(ctx.gamepad1(), turret,ctx);
                                             })
                                         )
                                 )
@@ -80,10 +81,12 @@ public class OpModeTemplate {
 
         ctx.dropToScheduler();
     });
-    public static void looping(Gamepad gamepad1, Turret turret) {
+    public static void looping(Gamepad gamepad1, Turret turret, Context ctx) {
         follower.update();
         telemetryM.update();
-        telemetryM.addData("Position: ", turret.getPosition());
+        telemetryM.addData("Position: ", (turret.getPosition()/2.48104755341)/4.71863271);
+        ctx.telemetry().addData("Position: ", (turret.getPosition()/2.48104755341)/4.71863271);
+        ctx.telemetry().update();
         if (!automatedDrive) {
             //Make the last parameter false for field-centric
             //In case the drivers want to use a "slowMode" you can scale the vectors
@@ -129,7 +132,6 @@ public class OpModeTemplate {
         if (gamepad1.xWasPressed()) {
             slowModeMultiplier += 0.25;
         }
-
         telemetryM.debug("position", follower.getPose());
         telemetryM.debug("velocity", follower.getVelocity());
         telemetryM.debug("automatedDrive", automatedDrive);

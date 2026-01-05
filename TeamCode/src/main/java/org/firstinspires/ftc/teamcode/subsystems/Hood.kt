@@ -19,7 +19,7 @@ import kotlin.math.sqrt
 
 class Hood(hardwareMap: HardwareMap, spindexer: Spindexer, follower: Follower, allianceColors: Constants.AllianceColors) {
     private val hoodServo: CachingServo = CachingServo(hardwareMap.get(Servo::class.java, Constants.shooterConstants.shooterMotorID))
-    val targetingPosition: Double = 0.0
+    var targetingPosition: Double = 0.0
     enum class State {
         SHOOTING,
         STOPPED
@@ -51,7 +51,6 @@ class Hood(hardwareMap: HardwareMap, spindexer: Spindexer, follower: Follower, a
                         spindexer.setShooting(true)
                         hoodServo.position = targetingPosition
                     }
-
                     State.STOPPED -> {
                         spindexer.setShooting(false)
                         hoodServo.position = 0.0

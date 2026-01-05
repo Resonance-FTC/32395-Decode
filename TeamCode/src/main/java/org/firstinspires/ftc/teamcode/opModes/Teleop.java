@@ -28,9 +28,8 @@ public class Teleop {
         Drivetrain drivetrain = new Drivetrain(ctx.hardwareMap(), ctx.gamepad1(), startPose);
         Follower follower = drivetrain.follower;
 
-        Turret turret = new Turret(ctx.hardwareMap(), Constants.AllianceColors.BLUE, follower);
+        Turret turret = new Turret(ctx.hardwareMap(), Constants.AllianceColors.BLUE, follower,ctx);
         Spindexer spindexer = new Spindexer(ctx.hardwareMap());
-        Flywheel flywheel = new Flywheel(ctx.hardwareMap(), spindexer);
         Intake intake = new Intake(ctx.hardwareMap());
 
         PathChain pathChain = follower.pathBuilder() //Lazy Curve Generation

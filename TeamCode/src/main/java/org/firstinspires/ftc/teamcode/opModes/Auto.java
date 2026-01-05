@@ -140,7 +140,7 @@ public class Auto {
 
         drivetrain = new Drivetrain(ctx.hardwareMap(), ctx.gamepad1(), startPose);
         follower = drivetrain.follower;
-        turret = new Turret(ctx.hardwareMap(), Constants.AllianceColors.BLUE, follower);
+        turret = new Turret(ctx.hardwareMap(), Constants.AllianceColors.BLUE, follower,ctx);
         intake = new Intake(ctx.hardwareMap());
     }
 

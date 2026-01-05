@@ -36,6 +36,7 @@ public class Teleoplocalization {
 
     public Pose3D calculateLimelightPose() {
         limelight.updateRobotOrientation(pinpoint.getHeading(AngleUnit.DEGREES));
+
         LLResult result = limelight.getLatestResult();
         if (result != null){
             if (result.isValid()) {
